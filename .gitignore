@@ -1,0 +1,4 @@
+.terra*
+*.tfstate*
+gcp_*
+stone-*
