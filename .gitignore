@@ -2,3 +2,4 @@
 *.tfstate*
 gcp_*
 stone-*
+*.json
