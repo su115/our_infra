@@ -6,9 +6,9 @@ variable "region" {default = "us-central1"}
 variable "db_count" {default = 1} 
 variable "zone" {default = "us-central1-c"}
 
-variable "machine" {
-  type = map
-  default = {
+variable "machine" {                                     # List
+  type = map                                             # of
+  default = {                                            # Virtual Machines
     "slave"  = "n2d-highcpu-2"
     "master" = "n2-standard-4"
     "bastion" = "e2-standard-2"
