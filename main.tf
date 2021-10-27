@@ -21,7 +21,7 @@ resource "google_compute_instance" "master" {
  }
   depends_on = [google_compute_subnetwork.private]
   metadata = {ssh-keys = "debian:${file("./gcp_main.pub")}"}
-  tags = ["allow-icmp", "allow-ssh", "allow-master"]
+  tags = ["allow-icmp", "allow-ssh", "allow-all"]
   network_interface {
      subnetwork = "private"
 
@@ -40,7 +40,7 @@ resource "google_compute_instance" "slave" {
      image = "${var.image}"
    }
  }
- tags = ["allow-icmp", "allow-ssh"]
+ tags = ["allow-icmp", "allow-ssh", "allow-all"]
 # labels = {
 #   name = "Slave-${count.index+1}"
 #   machine_type = "${var.environment == "prod" ? var.machine_type : var.machine_type_dev}"
@@ -102,9 +102,8 @@ resource "google_compute_instance" "db" {
   metadata = {
    ssh-keys = "db:${file("./gcp_main.pub")}"
  }
- tags = ["allow-icmp", "allow-ssh"]
- network_interface {
+ tags = ["allow-icmp", "allow-ssh", "allow-all"]
    subnetwork = "db"
 
-  }
 }
+

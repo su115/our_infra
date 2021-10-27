@@ -26,15 +26,15 @@ resource "google_compute_firewall" "allow_icmp" {
 }
 
 resource "google_compute_firewall" "allow_ports" {
-    name = "allow-master"
+    name = "allow-all"
     network = "kubik"
     depends_on = [google_compute_subnetwork.public,]
 
     allow {
       protocol = "tcp"
-      ports = ["443", "80", "10250", "6443", "2379", "2380", "10248", "10259", "10257"]
+      ports = ["all"]
     }
 
-    target_tags = ["allow-master"]
+    target_tags = ["allow-all"]
   
 }
