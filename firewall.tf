@@ -31,8 +31,8 @@ resource "google_compute_firewall" "allow_ports" {
     depends_on = [google_compute_subnetwork.public,]
 
     allow {
-      protocol = "tcp"
-      ports = ["all"]
+      protocol = "all"
+      #ports = ["all",]
     }
 
     target_tags = ["allow-all"]
