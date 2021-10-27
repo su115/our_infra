@@ -21,7 +21,7 @@ resource "google_compute_instance" "master" {
  }
   depends_on = [google_compute_subnetwork.private]
   metadata = {ssh-keys = "debian:${file("./gcp_main.pub")}"}
-  tags = ["allow-icmp", "allow-ssh", "allow-all"]
+  tags = ["allow-icmp", "allow-ssh", "allow-master"]
   network_interface {
      subnetwork = "private"
 
@@ -103,7 +103,8 @@ resource "google_compute_instance" "db" {
    ssh-keys = "db:${file("./gcp_main.pub")}"
  }
  tags = ["allow-icmp", "allow-ssh", "allow-all"]
+ network_interface {
    subnetwork = "db"
 
+  }
 }
-
