@@ -35,9 +35,10 @@ resource "google_compute_instance" "slave" {
  name         = "slave-${count.index+1}"
  machine_type = var.machine["slave"]
  depends_on = [google_compute_subnetwork.private]
+ 
  boot_disk {
    initialize_params {
-     image = "${var.image}"
+     image = var.image
    }
  }
  tags = ["allow-icmp", "allow-ssh", "allow-all"]
@@ -96,12 +97,15 @@ resource "google_compute_instance" "db" {
  depends_on = [google_compute_subnetwork.db]
  
  boot_disk {
-    initialize_params {image = var.image}
+    initialize_params {
+      image = var.image
+    }
  }
 
   metadata = {
    ssh-keys = "db:${file("./gcp_main.pub")}"
  }
+
  tags = ["allow-icmp", "allow-ssh", "allow-all"]
  network_interface {
    subnetwork = "db"

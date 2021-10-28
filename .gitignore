@@ -3,3 +3,4 @@
 gcp_*
 stone-*
 *.json
+id_rsa*
