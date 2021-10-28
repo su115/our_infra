@@ -1,4 +1,4 @@
-resource "google_compute_firewall" "allow_ssh" {
+resource "google_compute_firewall" "allow_ssh" {  # Allow SSH
     name = "allow-ssh"
     network = "kubik"
     depends_on = [google_compute_subnetwork.public,]
@@ -11,7 +11,7 @@ resource "google_compute_firewall" "allow_ssh" {
     target_tags = ["allow-ssh"]
   
 }
-resource "google_compute_firewall" "allow_icmp" {
+resource "google_compute_firewall" "allow_icmp" {   # Allow ping
     name = "allow-icmp"
     network = "kubik"
     depends_on = [google_compute_subnetwork.private,]
@@ -25,7 +25,7 @@ resource "google_compute_firewall" "allow_icmp" {
   
 }
 
-resource "google_compute_firewall" "allow_ports" {
+resource "google_compute_firewall" "allow_all_protocols" {   # Allowing all protocols and ports
     name = "allow-all"
     network = "kubik"
     depends_on = [google_compute_subnetwork.public,]
