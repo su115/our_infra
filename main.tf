@@ -16,6 +16,14 @@ resource "google_compute_instance" "master" {
  machine_type = var.machine["master"]
  name = "master-${count.index+1}"
 
+### GCE account
+# allow_stopping_for_update = true
+# service_account {
+#	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
+#	scopes = ["cloud-platform"]
+# }
+
+
  boot_disk {
     initialize_params {image = var.image}
  }
@@ -45,6 +53,16 @@ resource "google_compute_instance" "slave" {
 #   name = "Slave-${count.index+1}"
 #   machine_type = "${var.environment == "prod" ? var.machine_type : var.machine_type_dev}"
 # }
+
+
+### GCE account
+# allow_stopping_for_update = true
+# service_account {
+#	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
+#	scopes = ["cloud-platform"]
+# }
+
+
 
  metadata = {
   ssh-keys = "debian:${file("./gcp_main.pub")}"
