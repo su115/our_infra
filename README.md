@@ -17,3 +17,4 @@ cd our_infra
 terraform init
 terraform apply
 ```
+here
