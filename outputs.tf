@@ -16,6 +16,6 @@ output "SLAVE_1" {
 output "SLAVE_2" {
  value = google_compute_instance.slave[1].network_interface[0].network_ip
 }
-output "DB" {
- value = google_compute_instance.db[0].network_interface[0].network_ip
-} 
+#output "DB" {
+# value = google_compute_instance.db[0].network_interface[0].network_ip
+#} 

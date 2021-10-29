@@ -105,24 +105,24 @@ tags = ["allow-icmp", "allow-ssh"]
    }
  }
 }
-#------------------------- D A T A B A S E ------------------------------
-
-resource "google_compute_instance" "db" {
- count = var.db_count
- machine_type = var.machine["db"]
- name = "db-${count.index+1}"
- depends_on = [google_compute_subnetwork.db]
- 
- boot_disk {
-    initialize_params {image = var.image}
- }
-
-  metadata = {
-   ssh-keys = "db:${file("./gcp_main.pub")}"
- }
- tags = ["allow-icmp", "allow-ssh", "allow-all"]
- network_interface {
-   subnetwork = "db"
-
-  }
-}
+##------------------------- D A T A B A S E ------------------------------
+#
+#resource "google_compute_instance" "db" {
+# count = var.db_count
+# machine_type = var.machine["db"]
+# name = "db-${count.index+1}"
+# depends_on = [google_compute_subnetwork.db]
+# 
+# boot_disk {
+#    initialize_params {image = var.image}
+# }
+#
+#  metadata = {
+#   ssh-keys = "db:${file("./gcp_main.pub")}"
+# }
+# tags = ["allow-icmp", "allow-ssh", "allow-all"]
+# network_interface {
+#   subnetwork = "db"
+#
+#  }
+#}
