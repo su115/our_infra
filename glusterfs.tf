@@ -24,14 +24,11 @@ resource "google_compute_instance" "db" {
   #	disk_size_gb=50
   # }
   metadata = {
-    ssh-keys = "db:${file("./gcp_main.pub")}"
-  }
-  tags = ["allow-icmp", "allow-ssh", "allow-all"]
-  network_interface {
-    subnetwork = "db"
-  }
-  lifecycle {
-    ignore_changes = ["attached_disk"]
+   ssh-keys = "db:${file("./id_rsa.pub")}"
+ }
+ tags = ["allow-icmp", "allow-ssh", "allow-all"]
+ network_interface {
+   subnetwork = "db"
   }
 }
 

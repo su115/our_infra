@@ -38,3 +38,5 @@ resource "google_compute_firewall" "allow_all_protocols" {   # Allowing all prot
     target_tags = ["allow-all"]
   
 }
+
+#Elastic search, stek elk
