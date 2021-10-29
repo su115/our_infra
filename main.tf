@@ -1,10 +1,10 @@
 
 
 provider "google" {
-  project = "stone-botany-329514"
+  project = "stone-botany-test"
 	region = var.region
 	zone = var.zone
-	credentials=file("credterraform.json")
+	credentials=file("credterraform-test.json")
   
 }
 

@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
-    bucket  = "stone-botany-test"
+    bucket  = "terraform6bucket123"
     prefix  = "terraform/state"
-    credentials="credterraform.json"
+    credentials="credterraform-test.json"
   }
 }
