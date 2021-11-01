@@ -10,7 +10,7 @@ variable "machine" {                                     # List
   type = map                                             # of
   default = {                                            # Virtual Machines
     "slave"  = "n2d-highcpu-2"
-    "master" = "n2-standard-4"
+    "master" = "n2-standard-2"
     "bastion" = "e2-standard-2"
     "db" = "e2-small"
   }
