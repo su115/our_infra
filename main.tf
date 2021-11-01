@@ -17,11 +17,11 @@ resource "google_compute_instance" "master" {
  name = "master-${count.index+1}"
 
 ### GCE account
-# allow_stopping_for_update = true
-# service_account {
-#	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
-#	scopes = ["cloud-platform"]
-# }
+allow_stopping_for_update = true
+service_account {
+	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
+	scopes = ["cloud-platform"]
+}
 
 
  boot_disk {
@@ -57,11 +57,11 @@ resource "google_compute_instance" "slave" {
 
 
 ### GCE account
-# allow_stopping_for_update = true
-# service_account {
-#	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
-#	scopes = ["cloud-platform"]
-# }
+allow_stopping_for_update = true
+service_account {
+	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
+	scopes = ["cloud-platform"]
+}
 
 
 
