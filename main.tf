@@ -1,7 +1,7 @@
 
 
 provider "google" {
-  project = "stone-botany-329514"
+  project = "stone-botany-ihor"
 	region = var.region
 	zone = var.zone
 	credentials=file("credterraform.json")
@@ -19,7 +19,7 @@ resource "google_compute_instance" "master" {
 ### GCE account
 allow_stopping_for_update = true
 service_account {
-	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
+	email="ihor1test@stone-botany-ihor.iam.gserviceaccount.com"
 	scopes = ["cloud-platform"]
 }
 
@@ -59,7 +59,7 @@ resource "google_compute_instance" "slave" {
 ### GCE account
 allow_stopping_for_update = true
 service_account {
-	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
+	email="ihor1test@stone-botany-ihor.iam.gserviceaccount.com"
 	scopes = ["cloud-platform"]
 }
 
@@ -87,7 +87,7 @@ count = "1"
     initialize_params {image = var.image}
  }
 
-tags = ["allow-icmp", "allow-ssh"]
+tags = ["allow-icmp", "allow-ssh","allow-all"]
 
   metadata = {
    ssh-keys = "debian:${file("./id_rsa.pub")}"

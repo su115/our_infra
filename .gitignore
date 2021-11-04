@@ -5,4 +5,5 @@ stone-*
 *.json
 
 id_rsa*
-
+debian*
+kube*
