@@ -1,5 +1,4 @@
 
-
 provider "google" {
   project = "stone-botany-test"
 	region = var.region
@@ -16,12 +15,12 @@ resource "google_compute_instance" "master" {
  machine_type = var.machine["master"]
  name = "master-${count.index+1}"
 
-### GCE account
-# allow_stopping_for_update = true
-# service_account {
-#	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
-#	scopes = ["cloud-platform"]
-# }
+## GCE account
+ allow_stopping_for_update = true
+ service_account {
+	email="tester4@stone-botany-test.iam.gserviceaccount.com"
+	scopes = ["cloud-platform"]
+ }
 
 
  boot_disk {
@@ -29,7 +28,7 @@ resource "google_compute_instance" "master" {
  }
   depends_on = [google_compute_subnetwork.private]
   metadata = {ssh-keys = "debian:${file("./id_rsa.pub")}"}
-  tags = ["allow-icmp", "allow-ssh", "allow-all"]
+  tags = ["allow-icmp", "allow-ssh"]
   network_interface {
      subnetwork = "private"
 
@@ -56,12 +55,12 @@ resource "google_compute_instance" "slave" {
 # }
 
 
-### GCE account
-# allow_stopping_for_update = true
-# service_account {
-#	email="k8s-gce-test@stone-botany-329514.iam.gserviceaccount.com"
-#	scopes = ["cloud-platform"]
-# }
+## GCE account
+ allow_stopping_for_update = true
+ service_account {
+	email="tester4@stone-botany-test.iam.gserviceaccount.com"
+	scopes = ["cloud-platform"]
+ }
 
 
 
@@ -93,6 +92,7 @@ tags = ["allow-icmp", "allow-ssh"]
    ssh-keys = "debian:${file("./id_rsa.pub")}"
  }
 
+ allow_stopping_for_update = true
 metadata_startup_script = "sudo chmod 600 /home/debian/.ssh/id_rsa.pub" # Міняти ТУТ
 
 
