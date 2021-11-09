@@ -17,12 +17,22 @@ resource "google_compute_subnetwork" "public" {
   network       = google_compute_network.main_vpc.id
 }
 
+<<<<<<< HEAD
 resource "google_compute_subnetwork" "db" {
   name          = "db"
   ip_cidr_range = "10.10.3.0/29"
   region        = var.region
   network       = google_compute_network.main_vpc.id
 }
+=======
+# resource "google_compute_subnetwork" "db" {
+#   name          = "db"
+#   ip_cidr_range = "10.10.3.0/29"
+#   region        = var.region
+#   network       = google_compute_network.main_vpc.id
+#   depends_on = [google_compute_network.main_vpc] # Dependence on the main network. It is created after main_vpc and is destroyed before it
+# }
+>>>>>>> 548617daa0b094980652c79ce3e3f824347e5a0a
 #-------------------- G A T E W A Y --------------------------------
 resource "google_compute_router" "router" {
   name    = "my-router"
