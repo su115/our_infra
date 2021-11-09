@@ -1,5 +1,5 @@
 
 output "master-private-ip" {
-  value = google_compute_instance.master[0].network_interface[0].network_ip
+  value = flatten(google_compute_instance.master[*].network_interface[*].network_ip)
 }
 

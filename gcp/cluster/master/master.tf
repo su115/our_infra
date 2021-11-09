@@ -11,8 +11,10 @@ resource "google_compute_instance" "master" {
     email  = var.email
     scopes = ["cloud-platform"]
   }
-
-
+  labels = {
+    vm = "k8s-cluster"
+  }
+  desired_status = var.status-master
   boot_disk {
     initialize_params { image = var.image }
   }

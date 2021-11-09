@@ -42,3 +42,7 @@ variable "machine" { # List
   }
 }
 
+# State
+variable "status-bastion" { default = "TERMINATED" }
+variable "status-master" { default = "TERMINATED" }
+variable "status-slaves" { default = "TERMINATED" }
