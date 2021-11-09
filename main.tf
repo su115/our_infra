@@ -27,9 +27,14 @@ service_account {
  boot_disk {
     initialize_params {image = var.image}
  }
+ labels = {
+# name = "master-${count.index+1}"
+name = "k8s"
+ }
+
   depends_on = [google_compute_subnetwork.private]
   metadata = {ssh-keys = "debian:${file("./id_rsa.pub")}"}
-  tags = ["allow-icmp", "allow-ssh", "allow-all"]
+  tags = ["allow-icmp", "allow-ssh", "allow-all", "grafana-rule"]
   network_interface {
      subnetwork = "private"
 
@@ -50,10 +55,11 @@ resource "google_compute_instance" "slave" {
    }
  }
  tags = ["allow-icmp", "allow-ssh", "allow-all"]
-# labels = {
-#   name = "Slave-${count.index+1}"
+  labels = {
+  # name = "slave-${count.index+1}"
+  name = "k8s"
 #   machine_type = "${var.environment == "prod" ? var.machine_type : var.machine_type_dev}"
-# }
+}
 
 
 ### GCE account
@@ -83,6 +89,9 @@ count = "1"
  name = "bastion" 
  #machine_type = "${var.environment != "dev" ? var.machine_type : var.machine_type_dev}"
  
+ labels = {
+name = "bastion"
+ }
  boot_disk {
     initialize_params {image = var.image}
  }
