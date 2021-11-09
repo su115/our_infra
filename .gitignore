@@ -1,9 +1,4 @@
-.terra*
-*.tfstate*
-gcp_*
-stone-*
-*.json
+cred/*
 
-id_rsa*
-debian*
-kube*
+**/.terraform*
+**/.*.swp

@@ -4,7 +4,7 @@ provider "google" {
   project = "stone-botany-ihor"
 	region = var.region
 	zone = var.zone
-	credentials=file("credterraform.json")
+	credentials=file("cred/credterraform.json")
   
 }
 
@@ -28,7 +28,7 @@ service_account {
     initialize_params {image = var.image}
  }
   depends_on = [google_compute_subnetwork.private]
-  metadata = {ssh-keys = "debian:${file("./id_rsa.pub")}"}
+  metadata = {ssh-keys = "debian:${file("cred/id_rsa.pub")}"}
   tags = ["allow-icmp", "allow-ssh", "allow-all"]
   network_interface {
      subnetwork = "private"
@@ -66,7 +66,7 @@ service_account {
 
 
  metadata = {
-  ssh-keys = "debian:${file("./id_rsa.pub")}"
+  ssh-keys = "debian:${file("cred/id_rsa.pub")}"
 }
  
  network_interface {
@@ -90,7 +90,7 @@ count = "1"
 tags = ["allow-icmp", "allow-ssh","allow-all"]
 
   metadata = {
-   ssh-keys = "debian:${file("./id_rsa.pub")}"
+   ssh-keys = "debian:${file("cred/id_rsa.pub")}"
  }
 
 metadata_startup_script = "sudo chmod 600 /home/debian/.ssh/id_rsa.pub" # Міняти ТУТ
