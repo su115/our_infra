@@ -104,7 +104,7 @@ metadata_startup_script = "sudo chmod 600 /home/debian/.ssh/id_rsa.pub" # Мін
    subnetwork = "public"
 
    access_config {
-     // Include this section to give the VM an external ip address
+     # Include this section to give the VM an external ip address
 
    }
  }
