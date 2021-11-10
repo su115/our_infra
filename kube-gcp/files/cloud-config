@@ -1,2 +1,3 @@
 [Global]
 project-id = "stone-botany-ihor"
+node-tags = "k8s-cluster"

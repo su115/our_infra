@@ -30,6 +30,7 @@ There main targets:
 	get/bastion-ssh		get link to ssh connect, Have Bugs!!!
 # Set:
 	set/hosts		set ips in kube-gcp/hosts
+	set/upload_files	upload cred/id_rsa* kube-gcp/ files on bastion
 ------------------------------------------------------------------------------------------
 Examples:
 	# apply infrastructure

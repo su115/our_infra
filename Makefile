@@ -8,6 +8,7 @@ REV_SINGLE := gcp/cluster/slaves gcp/cluster/master gcp/cluster/bastion gcp/netw
 
 
 # Internal variables
+value=None
 act=plan	# Action to do with component
 BUILD_DEBUG=yes	# Allow to redefine variables
 
@@ -31,7 +32,7 @@ cluster/apply:
 	@echo "[Apply cluster] OK"
 
 cluster/destroy:
-	# Destroy cluster	
+	# Destroy cluster
 	for i in  $(REV_SINGLE); do \
 		terraform -chdir=$$i destroy -auto-approve ; \
 	done
@@ -52,6 +53,17 @@ _set-down:
 	sed -i gcp/variable.tf  -e  's/variable "status-slaves" { default = "RUNNING" }/variable "status-slaves" { default = "TERMINATED" }/g'
 	sed -i gcp/variable.tf  -e  's/variable "status-master" { default = "RUNNING" }/variable "status-master" { default = "TERMINATED" }/g'
 	sed -i gcp/variable.tf  -e  's/variable "status-bastion" { default = "RUNNING" }/variable "status-bastion" { default = "TERMINATED" }/g'
+# Upload files on bastion
+set/upload_files: set/hosts
+	# rsync better than scp
+	$(eval  EXTERNAL_IP=$(shell terraform -chdir=gcp/cluster/bastion output -json bastion-public-ip | sed 's/"//g'))
+	# -o StrictHostKeyChecking=no 		- turn off fingerprint checking prompt
+	# -o UserKnownHostsFile=/dev/null 	- fix `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`
+	# -o LogLevel=quite 			- turn off Warnings
+	rsync -Pav -e "ssh -i cred/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=quite"  cred/id_rsa* debian@$(EXTERNAL_IP):/home/debian/.ssh
+	rsync -Pav -e "ssh -i cred/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=quite"  kube-gcp/*   debian@$(EXTERNAL_IP):/home/debian/
+	@echo "[set/upload_files] OK"
+
 
 # Other targets:
 # Ansible hosts setup
@@ -75,25 +87,21 @@ get/bastion-ssh:
 	@echo "ssh -i cred/id_rsa debian@$(EXTERNAL_IP)"
 
 # Experimantal feature !!! Be careful!!!
-install/k8s:%:set/hosts
+install/k8s: set/upload_files
 	# 1. GET EXTERNAL_IP
 	$(eval  EXTERNAL_IP=$(shell terraform -chdir=gcp/cluster/bastion output -json bastion-public-ip | sed 's/"//g'))
 	# 1.1 Check EXTERNAL_IP
 	@echo "$(EXTERNAL_IP):/home/debian/"
-	# 2. Download files
-	# rsync better than scp
-	rsync -Pav -e "ssh -i cred/id_rsa"  cred/id_rsa* debian@$(EXTERNAL_IP):/home/debian/.ssh
-	rsync -Pav -e "ssh -i cred/id_rsa -o StrictHostKeyChecking=no"  kube-gcp/*   debian@$(EXTERNAL_IP):/home/debian/
 	# 3. Install k8s
-	# 3.1 install pip3 
+	# 3.1 install pip3
 	ssh -i cred/id_rsa  debian@$(EXTERNAL_IP)  ./ansible_install.sh
 	@echo "[pip3 installed] OK"
 	# 3.2 ansible ping
-	ssh -i cred/id_rsa  debian@$(EXTERNAL_IP)  ansible -m ping all > ansible.log
+	ssh -i cred/id_rsa  debian@$(EXTERNAL_IP)  ansible -m ping all
 	@echo "[ansible ping] OK"
 	# 3.3 install k8s
 	@echo "[install K8S] Starting ..."
-	ssh -i cred/id_rsa  debian@$(EXTERNAL_IP)  ansible-playbook install-cluster.yml >> ansible.log
+	ssh -i cred/id_rsa  debian@$(EXTERNAL_IP)  ansible-playbook install-cluster.yml | tee ansible.log
 	@echo "[install K8S] OK"
 
 
