@@ -1,5 +1,5 @@
 cred/*
-
+ansible.log
 **/.terraform*
 **/.*.swp
 
