@@ -1,6 +1,6 @@
 # Help
 help:
-	@echo "cat help here."
+	cat doc/make.help
 
 # Variables
 SINGLE := gcp/network gcp/cluster/master gcp/cluster/slaves gcp/cluster/bastion  	 # For apply
