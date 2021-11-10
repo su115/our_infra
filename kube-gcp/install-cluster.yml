@@ -1,0 +1,166 @@
+#
+# create the debian user and ensure the debian user has sudo rights
+#
+- hosts: all
+  become: yes
+  tasks:
+   - name: create the 'debian' user
+     user: name=debian append=yes state=present createhome=yes shell=/bin/bash
+
+   - name: allow 'debian' to have passwordless sudo
+     lineinfile:
+       dest: /etc/sudoers
+       line: 'debian ALL=(ALL) NOPASSWD: ALL'
+       validate: 'visudo -cf %s'
+
+   - name: set up authorized keys for the debian user
+     authorized_key: user=debian key="{{item}}"
+     with_file:
+       - ~/.ssh/id_rsa.pub
+#
+# install docker, kubelet, kubeadm, kubectl
+#
+- hosts: all
+  become: yes
+  tasks:
+   - name: install Docker
+     apt:
+       name: docker.io
+       state: present
+       update_cache: true
+
+   - name: install APT Transport HTTPS
+     apt:
+       name: apt-transport-https
+       state: present
+
+   - name: add Kubernetes apt-key
+     apt_key:
+       url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+       state: present
+
+   - name: add Kubernetes' APT repository
+     apt_repository:
+      repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+      filename: 'kubernetes'
+
+   - name: install kubelet
+     apt:
+       name: kubelet
+       state: present
+       update_cache: true
+
+   - name: install kubeadm
+     apt:
+       name: kubeadm
+       state: present
+#
+#  disable swap, ufw, sed command
+#       
+   - name: disable swap, ufw, sed command
+     shell: |
+             sudo swapoff -a
+             sudo sed -ri 's/kubelet.conf"/kubelet.conf --cgroup-driver=cgroupfs"/g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+             mkdir $HOME/tmp
+             sudo systemctl stop ufw
+             sudo systemctl disable ufw
+ 
+
+- hosts: masters
+  become: yes
+  tasks:
+   - name: install kubectl
+     apt:
+       name: kubectl
+       state: present
+       force: yes
+#
+# create master node
+#
+
+- hosts: masters
+  become: yes
+  tasks:
+
+   - name: copy cloud config
+     become: yes
+     become_user: root
+     copy: src={{ item.src }} dest={{ item.dest }}
+     with_items:
+             - { src: "./files/cloud-config", dest: "/etc/kubernetes/" }
+             - { src: "./files/gcp.yaml", dest: "/etc/kubernetes/" }
+             - { src: "./files/default-gcp-storage-class.yaml", dest: "/etc/kubernetes/" }
+
+   - name: initialize the cluster
+     become: yes
+     become_user: root
+     shell: kubeadm init --config /etc/kubernetes/gcp.yaml  >> cluster_initialized.txt
+     args:
+       chdir: $HOME
+       creates: cluster_initialized.txt
+
+   - name: create .kube directory
+     become: yes
+     become_user: debian
+     file:
+       path: $HOME/.kube
+       state: directory
+       mode: 0755
+
+   - name: copy admin.conf to user's kube config
+     copy:
+       src: /etc/kubernetes/admin.conf
+       dest: /home/debian/.kube/config
+       remote_src: yes
+       owner: debian
+
+   - name: install Pod network
+     become: yes
+     become_user: debian
+     shell: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml >> pod_network_setup.txt
+     args:
+       chdir: $HOME
+       creates: pod_network_setup.txt
+
+   - name: install default StorageClass
+     become: yes
+     become_user: debian
+     shell: kubectl apply -f /etc/kubernetes/default-gcp-storage-class.yaml
+     
+   - name: Get the token for joining the slave nodes
+     become: yes
+     become_user: debian
+     shell: kubeadm token create  --print-join-command
+     register: kubernetes_join_command
+
+
+   - name: Copy join command to local file.
+     become: yes
+     local_action: copy content="{{ kubernetes_join_command.stdout_lines[0] }}" dest="/tmp/kubernetes_join_command" mode=0777
+#
+# join slaves nodes
+#
+- hosts: slaves
+  become: yes
+  gather_facts: yes
+
+  tasks:
+   - name: Copy cloud config to slave
+     become: yes
+     become_user: root
+     copy: src={{ item.src }} dest={{ item.dest }}
+     with_items:
+             - { src: "./files/cloud-config", dest: "/etc/kubernetes/" }
+
+   - name: Copy join command from Ansiblehost to the slave nodes.
+     become: yes
+     copy:
+       src: /tmp/kubernetes_join_command
+       dest: $HOME/tmp/kubernetes_join_command
+       mode: 0777
+
+   - name: Join the Slave nodes to the cluster.
+     become: yes
+     command: sh $HOME/tmp/kubernetes_join_command
+     register: joined_or_not
