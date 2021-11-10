@@ -3,7 +3,7 @@ To check all availible targets enter `make`, put `<Space>`, and twice `<Tab>`
 Cluster targets:		 `cluster/*`
 Internal targets:		 `_*`
 Install targets:		`install/*`
-Single module targets:		`gcp/*`
+Single module targets:		`single/*`
 Get targets:			`get/*`
 Set targets:			`set/*`
 
@@ -17,11 +17,11 @@ There main targets:
 				interface.						 
 	cluster/off		Switch all instances off like comand above.
 
-# Single module
-	gcp/*			To change one singe module you must use variable `act`
+# Single:
+	single/*			To change one singe module you must use variable `act`
 				witch mean activity like (`output`, `plan`, `apply`, 
 				`destroy` and other terraform relative) and targets 
-				`gcp/*`.
+				`single/*`.
 				Be carefull and keep in mind what you do.
 
 # Install:
@@ -40,10 +40,10 @@ Examples:
 	make cluster/off
 	
 	# apply slaves only
-	make act=apply gcp/cluster/slaves
+	make act=apply single/cluster/slaves
 
 	# get outputs from bastion
-	make act=outputs gcp/cluster/bastion
+	make act=outputs single/cluster/bastion
 
 	# get bastion link
 	make get/bastion-ssh

@@ -3,8 +3,8 @@ help:
 	cat doc/make.help
 
 # Variables
-SINGLE := gcp/network gcp/cluster/master gcp/cluster/slaves gcp/cluster/bastion  	 # For apply
-REV_SINGLE := gcp/cluster/slaves gcp/cluster/master gcp/cluster/bastion gcp/network 	 # For destroy
+SINGLE := network cluster/master cluster/slaves cluster/bastion  	 # For apply
+REV_SINGLE := cluster/slaves cluster/master cluster/bastion network 	 # For destroy
 
 
 # Internal variables
@@ -15,8 +15,10 @@ BUILD_DEBUG=yes	# Allow to redefine variables
 
 
 # Single action for infra
-$(SINGLE):
-	yes yes | terraform -chdir=$@ $(act)
+single/$(SINGLE):
+	# Correct PATH
+	$(eval  TMP_PATH=$(shell echo $@ | cut -d '/' -f 2- ))
+	yes yes | terraform -chdir=gcp/$(TMP_PATH) $(act)
 
 
 # Main targets: apply, destroy
@@ -27,14 +29,14 @@ cluster/off: _set-down _apply-instances
 cluster/apply:
 	# Apply cluster
 	for i in  $(SINGLE); do \
-		terraform -chdir=$$i apply -auto-approve ; \
+		terraform -chdir=gcp/$$i apply -auto-approve ; \
 	done
 	@echo "[Apply cluster] OK"
 
 cluster/destroy:
 	# Destroy cluster
 	for i in  $(REV_SINGLE); do \
-		terraform -chdir=$$i destroy -auto-approve ; \
+		terraform -chdir=gcp/$$i destroy -auto-approve ; \
 	done
 	@echo "[Destroy cluster] OK"
 
