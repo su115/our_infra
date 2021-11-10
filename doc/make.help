@@ -1,0 +1,52 @@
+To check all availible targets enter `make`, put `<Space>`, and twice `<Tab>`
+
+Cluster targets:		 `cluster/*`
+Internal targets:		 `_*`
+Install targets:		`install/*`
+Single module targets:		`gcp/*`
+Get targets:			`get/*`
+Set targets:			`set/*`
+
+
+There main targets:
+------------------------------------------------------------------------------------------
+# Cluster:
+	cluster/apply		Apply all infrastructure.				 
+	cluster/destroy		Destroy all infrastructure.				 
+	cluster/on		Switch all instances on. You can switch it manualy by web
+				interface.						 
+	cluster/off		Switch all instances off like comand above.
+
+# Single module
+	gcp/*			To change one singe module you must use variable `act`
+				witch mean activity like (`output`, `plan`, `apply`, 
+				`destroy` and other terraform relative) and targets 
+				`gcp/*`.
+				Be carefull and keep in mind what you do.
+
+# Install:
+	install/k8s		install K8S cluster, Experimantal!!!
+# Get:
+	get/bastion-ssh		get link to ssh connect, Have Bugs!!!
+# Set:
+	set/hosts		set ips in kube-gcp/hosts
+------------------------------------------------------------------------------------------
+Examples:
+	# apply infrastructure
+	make cluster/apply
+
+	# turn off instances
+	make cluster/off
+	
+	# apply slaves only
+	make act=apply gcp/cluster/slaves
+
+	# get outputs from bastion
+	make act=outputs gcp/cluster/bastion
+
+	# get bastion link
+	make get/bastion-ssh
+------------------------------------------------------------------------------------------
+
+
+
