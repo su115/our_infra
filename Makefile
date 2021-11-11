@@ -8,14 +8,13 @@ REV_SINGLE := cluster/slaves cluster/master cluster/bastion network 	 # For dest
 
 
 # Internal variables
-value=None
 act=plan	# Action to do with component
 BUILD_DEBUG=yes	# Allow to redefine variables
 
 
 
 # Single action for infra
-single/$(SINGLE):
+single/$(SINGLE): _check_act
 	# Correct PATH
 	$(eval  TMP_PATH=$(shell echo $@ | cut -d '/' -f 2- ))
 	yes yes | terraform -chdir=gcp/$(TMP_PATH) $(act)
@@ -79,6 +78,33 @@ set/hosts:
 	terraform -chdir=gcp/cluster/slaves output -json slaves-private-ips | sed s/\,/\\n/g | sed 's/\[//g' | sed 's/\]//g' | sed  's/"//g' >> kube-gcp/hosts
 	@echo [slaves] OK
 	@echo [set/hosts] OK
+_check_act:
+ifndef act
+	$(error "`atc` is undefined")
+endif
+
+_check_VALUE:
+ifndef VALUE
+	# Check is `VALUE` defined
+	$(error "VALUE is undefined")
+endif
+
+set/sa-email: _check_VALUE
+	# change email 
+	sed  -r 's/"email" \{.*/"email" \{ default \= \"'"$(VALUE)"'\" \}/g' -i  gcp/variable.tf
+	grep "email" gcp/variable.tf
+	@echo $(VALUE)
+
+set/bucket: _check_VALUE
+	# set bucket in backends:
+	for i in $(SINGLE); do \
+		echo ""; \
+		echo "gcp/$$i/backend.tf:" ;\
+		sed -r 's/ bucket.*/ bucket\t= \"'"$(VALUE)"'\"/g' -i  gcp/$$i/backend.tf  ;\
+		grep "bucket" gcp/$$i/backend.tf ;\
+	done
+	@echo [set/bucket] OK
+#set/projectl-id:
 
 ############################ Need Optimization ###########################
 # Get ssh link:

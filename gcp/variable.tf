@@ -6,13 +6,7 @@ variable "vmsa" { default = "ihor1test" }                                       
 variable "email" { default = "ihor1test@stone-botany-ihor.iam.gserviceaccount.com" } # manualy created
 
 ## Buckets
-variable "bucket" {
-  type = list(string)
-  default = [
-    "terraform-bucket-1511", # uniq buckets
-    "velero-bucket-1511"     # var.bucket[1]
-  ]
-}
+variable "bucket" { default = "terraform-bucket-1511" }
 
 ## Config 
 variable "path_cred" { default = "./cred/" }

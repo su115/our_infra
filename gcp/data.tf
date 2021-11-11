@@ -1,7 +1,7 @@
 data "terraform_remote_state" "network" {
   backend = "gcs"
   config = {
-    bucket = var.bucket[0]
+    bucket = var.bucket
     prefix = "terraform/states/network"
   }
 }
