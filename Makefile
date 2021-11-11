@@ -25,6 +25,13 @@ $(TEMP_SINGLE): _check_act
 cluster/on: _set-up _apply-instances
 cluster/off: _set-down _apply-instances
 
+cluster/init:	
+	# Init cluster
+	for i in  $(SINGLE); do \
+		terraform -chdir=gcp/$$i init ; \
+	done
+	@echo "[init cluster] OK"
+
 
 cluster/apply:
 	# Apply cluster

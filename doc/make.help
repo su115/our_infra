@@ -11,8 +11,9 @@ Set targets:			`set/*`
 There main targets:
 ------------------------------------------------------------------------------------------
 # Cluster:
+	cluster/init		Init backends in bucket.
 	cluster/apply		Apply all infrastructure.				 
-	cluster/destroy		Destroy all infrastructure.				 
+	cluster/destroy		Destroy all infrastructure.	Bug!!!			 
 	cluster/on		Switch all instances on. You can switch it manualy by web
 				interface.						 
 	cluster/off		Switch all instances off like comand above.
