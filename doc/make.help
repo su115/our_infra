@@ -18,7 +18,7 @@ There main targets:
 	cluster/off		Switch all instances off like comand above.
 
 # Single:
-	single/*			To change one singe module you must use variable `act`
+	single/*		To change one singe module you must use variable `act`
 				witch mean activity like (`output`, `plan`, `apply`, 
 				`destroy` and other terraform relative) and targets 
 				`single/*`.
@@ -31,6 +31,13 @@ There main targets:
 # Set:
 	set/hosts		set ips in kube-gcp/hosts
 	set/upload_files	upload cred/id_rsa* kube-gcp/ files on bastion
+
+	set/sa-email		set service-account email that attached to master and 
+				slaves. You must use variable `VALUE` with value that you
+				want to set. See examples below.
+	set/project_id		set project_id. Use varriable `VALUE`.
+	set/bucket		set bucket. And change `backend.tf`. Becarefull!!! Use
+				varriable `VALUE`.
 ------------------------------------------------------------------------------------------
 Examples:
 	# apply infrastructure
@@ -45,8 +52,14 @@ Examples:
 	# get outputs from bastion
 	make act=outputs single/cluster/bastion
 
+	# get specific slaves output
+	make single/cluster/slaves act="output -json slaves-private-ips"
+
 	# get bastion link
 	make get/bastion-ssh
+
+	# set project_id
+	make set/project_id VALUE=my-project-123
 ------------------------------------------------------------------------------------------
 
 

@@ -3,18 +3,19 @@ help:
 	cat doc/make.help
 
 # Variables
-SINGLE := network cluster/master cluster/slaves cluster/bastion  	 # For apply
-REV_SINGLE := cluster/slaves cluster/master cluster/bastion network 	 # For destroy
+SINGLE := network cluster/master cluster/slaves cluster/bastion  	 # order apply
+TEMP_SINGLE := single/network single/cluster/master single/cluster/slaves single/cluster/bastion  	 # single bug solution
+REV_SINGLE := cluster/slaves cluster/master cluster/bastion network 	 # order destroy
 
 
 # Internal variables
-act=plan	# Action to do with component
-BUILD_DEBUG=yes	# Allow to redefine variables
+#act=plan	# Action to do with component
+#BUILD_DEBUG=yes	# Allow to redefine variables
 
 
 
 # Single action for infra
-single/$(SINGLE): _check_act
+$(TEMP_SINGLE): _check_act
 	# Correct PATH
 	$(eval  TMP_PATH=$(shell echo $@ | cut -d '/' -f 2- ))
 	yes yes | terraform -chdir=gcp/$(TMP_PATH) $(act)
@@ -61,8 +62,8 @@ set/upload_files: set/hosts
 	# -o StrictHostKeyChecking=no 		- turn off fingerprint checking prompt
 	# -o UserKnownHostsFile=/dev/null 	- fix `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`
 	# -o LogLevel=quite 			- turn off Warnings
-	rsync -Pav -e "ssh -i cred/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=quite"  cred/id_rsa* debian@$(EXTERNAL_IP):/home/debian/.ssh
-	rsync -Pav -e "ssh -i cred/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=quite"  kube-gcp/*   debian@$(EXTERNAL_IP):/home/debian/
+	rsync -Pav -e "ssh -i cred/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"  cred/id_rsa* debian@$(EXTERNAL_IP):/home/debian/.ssh
+	rsync -Pav -e "ssh -i cred/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"  kube-gcp/*   debian@$(EXTERNAL_IP):/home/debian/
 	@echo "[set/upload_files] OK"
 
 
@@ -96,15 +97,27 @@ set/sa-email: _check_VALUE
 	@echo $(VALUE)
 
 set/bucket: _check_VALUE
-	# set bucket in backends:
+	# set into backends:
 	for i in $(SINGLE); do \
 		echo ""; \
 		echo "gcp/$$i/backend.tf:" ;\
 		sed -r 's/ bucket.*/ bucket\t= \"'"$(VALUE)"'\"/g' -i  gcp/$$i/backend.tf  ;\
 		grep "bucket" gcp/$$i/backend.tf ;\
 	done
+	# set into varriable.tf
+	echo "gcp/variable.tf:" 
+	sed -r 's/"bucket" \{.*/"bucket" \{ default = \"'"$(VALUE)"'\" \}/g'  -i  gcp/variable.tf
+	grep "bucket" gcp/variable.tf 
 	@echo [set/bucket] OK
-#set/projectl-id:
+set/projectl_id: _check_VALUE
+	# set into variable.tf:
+	sed -r 's/"project_id" \{.*/"project_id" \{ default = \"'"$(VALUE)"'\" \}/g' -i  gcp/variable.tf
+	grep "project_id" gcp/variable.tf
+	#
+	# set into kube-gcp/files/cloud-config
+	sed -r 's/project-id =.*/project-id = '"$(VALUE)"'/g' -i kube-gcp/files/cloud-config
+	grep "project-id"  kube-gcp/files/cloud-config
+	@echo [set/project_id] OK
 
 ############################ Need Optimization ###########################
 # Get ssh link:
@@ -120,14 +133,14 @@ install/k8s: set/upload_files
 	$(eval  EXTERNAL_IP=$(shell terraform -chdir=gcp/cluster/bastion output -json bastion-public-ip | sed 's/"//g'))
 	# 1.1 Check EXTERNAL_IP
 	@echo "$(EXTERNAL_IP):/home/debian/"
-	# 3. Install k8s
-	# 3.1 install pip3
+	# 2. Install k8s
+	# 2.1 install pip3
 	ssh -i cred/id_rsa  debian@$(EXTERNAL_IP)  ./ansible_install.sh
 	@echo "[pip3 installed] OK"
-	# 3.2 ansible ping
+	# 2.2 ansible ping
 	ssh -i cred/id_rsa  debian@$(EXTERNAL_IP)  ansible -m ping all
 	@echo "[ansible ping] OK"
-	# 3.3 install k8s
+	# 2.3 install k8s
 	@echo "[install K8S] Starting ..."
 	ssh -i cred/id_rsa  debian@$(EXTERNAL_IP)  ansible-playbook install-cluster.yml | tee ansible.log
 	@echo "[install K8S] OK"
