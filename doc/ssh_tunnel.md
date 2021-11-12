@@ -1,5 +1,6 @@
 # Create SSH tunnel
 ![ssh tunnel](https://prnt.sc/1za09qy)
+![test2](https://prntscr.com/1za7pmn)
 ```sh
 # 1. Create tunnel to master
 ssh -fNL 6443:master-1:6443 debian@$EXTERNAL_IP
