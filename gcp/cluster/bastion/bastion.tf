@@ -3,11 +3,9 @@ resource "google_compute_instance" "bastion" {
   count        = "1"
   machine_type = var.machine["bastion"]
   name         = "bastion"
-
   boot_disk {
     initialize_params { image = var.image }
   }
-
   tags    = ["allow-all-ssh", ]
   project = var.project_id
   zone    = var.zone
@@ -18,7 +16,6 @@ resource "google_compute_instance" "bastion" {
   depends_on     = [local.public-1]
   network_interface {
     subnetwork = local.public-1
-
     access_config {
       // Include this section to give the VM an external ip address
     }

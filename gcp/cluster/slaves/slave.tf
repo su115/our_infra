@@ -1,4 +1,3 @@
-
 resource "google_compute_instance" "slave" {
   count        = var.instance-count
   name         = "slave-${count.index + 1}"
@@ -10,7 +9,8 @@ resource "google_compute_instance" "slave" {
       image = var.image
     }
   }
-  tags = ["allow-private1-all", "allow-bastion-ssh", "allow-bastion-nodeport"]
+
+  tags = ["allow-private1-all", "allow-bastion-ssh", "allow-all-nodeport", ]
   labels = {
     vm = "k8s-cluster"
   }
@@ -22,8 +22,6 @@ resource "google_compute_instance" "slave" {
     email  = var.email
     scopes = ["cloud-platform"]
   }
-
-
 
   metadata = {
     ssh-keys = "debian:${file("cred/id_rsa.pub")}"

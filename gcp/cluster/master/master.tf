@@ -20,7 +20,7 @@ resource "google_compute_instance" "master" {
   }
   depends_on = [local.private-1]
   metadata   = { ssh-keys = "debian:${file("cred/id_rsa.pub")}" }
-  tags       = ["allow-bastion-nodeport", "allow-bastion-ssh", "allow-private1-all"]
+  tags       = ["allow-all-nodeport", "allow-bastion-ssh", "allow-private1-all", "allow-bastion-6443"]
   network_interface {
     subnetwork = local.private-1
 
