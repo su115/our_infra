@@ -116,7 +116,7 @@ set/bucket: _check_VALUE
 	sed -r 's/"bucket" \{.*/"bucket" \{ default = \"'"$(VALUE)"'\" \}/g'  -i  gcp/variable.tf
 	grep "bucket" gcp/variable.tf 
 	@echo [set/bucket] OK
-set/projectl_id: _check_VALUE
+set/project_id: _check_VALUE
 	# set into variable.tf:
 	sed -r 's/"project_id" \{.*/"project_id" \{ default = \"'"$(VALUE)"'\" \}/g' -i  gcp/variable.tf
 	grep "project_id" gcp/variable.tf
