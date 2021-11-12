@@ -37,6 +37,6 @@ variable "machine" { # List
 }
 
 # State
-variable "status-bastion" { default = "RUNNING" }
-variable "status-master" { default = "RUNNING" }
-variable "status-slaves" { default = "RUNNING" }
+variable "status-bastion" { default = "TERMINATED" }
+variable "status-master" { default = "TERMINATED" }
+variable "status-slaves" { default = "TERMINATED" }
