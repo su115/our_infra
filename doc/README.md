@@ -72,11 +72,12 @@ sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(l
 sudo apt-get update && sudo apt-get install terraform -y
 }
 ```
-# You maybe got error when run terraform apply
-#  Error: storage.NewClient() failed: dialing: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
-# Solution is manualy:
+#### You maybe got error when run terraform apply
+#### Error: storage.NewClient() failed: dialing: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
+#### Solution is manualy:
+```sh
 gcloud auth application-default login
-
+```
 # INIT CLUSTER
 ## ONLY FOR CRAZY-TEST BRANCH
 ### Install packages
