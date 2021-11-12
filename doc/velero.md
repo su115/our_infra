@@ -77,10 +77,3 @@ velero backup-location create <bsl-name> \
 velero backup-location get
 ```
 
-
-```
-
-
-
-
-
