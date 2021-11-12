@@ -1,12 +1,12 @@
 # Controll
-variable "project_id" { default = "stone-botany-ihor" }
+variable "project_id" { default = "test1508" }
 
 ## Service account
 variable "vmsa" { default = "ihor1test" }                                            # manualy created
-variable "email" { default = "ihor1test@stone-botany-ihor.iam.gserviceaccount.com" } # manualy created
+variable "email" { default = "sa-terraform@test1508.iam.gserviceaccount.com" }
 
 ## Buckets
-variable "bucket" { default = "terraform-bucket-1511" }
+variable "bucket" { default = "terraform-bucket-1712" }
 
 ## Config 
 variable "path_cred" { default = "./cred/" }
