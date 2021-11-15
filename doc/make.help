@@ -29,10 +29,11 @@ There main targets:
 	install/k8s		install K8S cluster, Experimantal!!!
 # Get:
 	get/bastion-ssh		get link to ssh connect, Have Bugs!!!
+	get/hosts		setup ips in kube-gcp/hosts
+	get/ssh-tunnel		create ssh-tunnel between vm and master-1
+	get/kubeconfig		mv master-1:/etc/kubernetes/admin.conf  vm:~/.kubeconfig
+				and change ip.
 # Set:
-	set/hosts		set ips in kube-gcp/hosts
-	set/upload_files	upload cred/id_rsa* kube-gcp/ files on bastion
-
 	set/sa-email		set service-account email that attached to master and 
 				slaves. You must use variable `VALUE` with value that you
 				want to set. See examples below.

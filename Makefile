@@ -63,7 +63,7 @@ _set-down:
 	sed -i gcp/variable.tf  -e  's/variable "status-master" { default = "RUNNING" }/variable "status-master" { default = "TERMINATED" }/g'
 	sed -i gcp/variable.tf  -e  's/variable "status-bastion" { default = "RUNNING" }/variable "status-bastion" { default = "TERMINATED" }/g'
 # Upload files on bastion
-set/upload_files: set/hosts
+_upload_files: get/hosts
 	# rsync better than scp
 	$(eval  EXTERNAL_IP=$(shell terraform -chdir=gcp/cluster/bastion output -json bastion-public-ip | sed 's/"//g'))
 	# -o StrictHostKeyChecking=no 		- turn off fingerprint checking prompt
@@ -76,7 +76,7 @@ set/upload_files: set/hosts
 
 # Other targets:
 # Ansible hosts setup
-set/hosts:
+get/hosts:
 	# Add master ip
 	echo "[masters]" > kube-gcp/hosts
 	terraform -chdir=gcp/cluster/master output -json master-private-ips | sed s/\,/\\n/g | sed 's/\[//g' | sed 's/\]//g' | sed  's/"//g' >> kube-gcp/hosts
@@ -135,7 +135,7 @@ get/bastion-ssh:
 	@echo "ssh -i cred/id_rsa debian@$(EXTERNAL_IP)"
 
 # Experimantal feature !!! Be careful!!!
-install/k8s: set/upload_files
+install/k8s: _upload_files
 	# 1. GET EXTERNAL_IP
 	$(eval  EXTERNAL_IP=$(shell terraform -chdir=gcp/cluster/bastion output -json bastion-public-ip | sed 's/"//g'))
 	# 1.1 Check EXTERNAL_IP
@@ -153,4 +153,25 @@ install/k8s: set/upload_files
 	@echo "[install K8S] OK"
 
 
+# Get .kube/config
+get/kubeconfig:
+	$(eval  EXTERNAL_IP=$(shell terraform -chdir=gcp/cluster/bastion output -json bastion-public-ip | sed 's/"//g'))
+	# Copy from master to bastion
+	ssh -i cred/id_rsa debian@$(EXTERNAL_IP) ansible-playbook addons/get_kubeconfig.yaml
+	$(eval  MASTER1_IP=$(shell  terraform -chdir=gcp/cluster/master  output -json master1-private-ip | sed s/\,/\\n/g | sed 's/\[//g' | sed 's/\]//g' | sed  's/"//g'))
+	# Copy config from bastion
+	rsync -Pav -e "ssh -i cred/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" debian@$(EXTERNAL_IP):/tmp/$(MASTER1_IP)/etc/kubernetes/admin.conf /tmp/
+	# Change ip on dns # You need to have "127.0.0.1 master-1" in your /etc/hosts !!!!
+	sed -i 's/$(MASTER1_IP)/master-1/' /tmp/admin.conf
+	cp /tmp/admin.config ~/.kube/config
 
+get/ssh-tunnel:
+	# Get Variables
+	$(eval  MASTER1_IP=$(shell  terraform -chdir=gcp/cluster/master  output -json master1-private-ip | sed s/\,/\\n/g | sed 's/\[//g' | sed 's/\]//g' | sed  's/"//g'))
+	$(eval  EXTERNAL_IP=$(shell terraform -chdir=gcp/cluster/bastion output -json bastion-public-ip | sed 's/"//g'))
+	if lsof -Pi :6443 -sTCP:LISTEN -t >/dev/null ; then \
+	    echo "running 6443"; \
+	else \
+	    ssh -i cred/id_rsa -fNL 6443:$(MASTER1_IP):6443 debian@$(EXTERNAL_IP) ; \
+	fi	
+	@echo [get/ssh-tunnel] OK
