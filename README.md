@@ -7,7 +7,7 @@
 * credential file >>> *.json
 * ssh key  >>> id_rsa.pub
 > ### > Check in cloud-config file > node-tags = "instance tag"
-> ### > You need to labele your instances 
+> ### > You need to labels your instances 
 1. Make a clone repo 
     ```sh
     git clone https://github.com/su115/our_infra.git
