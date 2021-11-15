@@ -91,6 +91,3 @@ velero backup describe my-namespace-backup
 velero restore create my-namespace-restore --from-backup my-namespace-backup
 # You need to add annotation, when migrate between different clusters!!!!!!!!!
 ```
-
-```
-
