@@ -65,10 +65,10 @@ velero install \
     --secret-file ./credentials-velero
 
 # 3. Create secret
-kubectl create secret generic -n velero bsl-credentials --from-file=gcp=</path/to/credentialsfile>
+kubectl create secret generic -n velero bsl-credentials --from-file=gcp=./credentials-velero
 
 # 4. Create storage location
-velero backup-location create <bsl-name> \
+velero backup-location create mygcp \
   --provider gcp \
   --bucket $BUCKET \
   --credential=bsl-credentials=gcp
@@ -76,4 +76,18 @@ velero backup-location create <bsl-name> \
 # check
 velero backup-location get
 ```
+# Simple backup commands
+```sh
+# 1. Create backup
+velero backup create my-namespace-backup --include-namespaces default --wait
 
+# 2. Get backups lists
+velero backup get 
+
+# 3. Describe backup
+velero backup describe my-namespace-backup
+
+# 4. Restore from backup
+velero restore create my-namespace-restore --from-backup my-namespace-backup
+# You need to add annotation, when migrate between different clusters!!!!!!!!!
+```
