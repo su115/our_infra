@@ -1,7 +1,7 @@
 
 
 provider "google" {
-  project = "stone-botany-329514"
+  project = var.project
 	region = var.region
 	zone = var.zone
 	credentials=file("credterraform.json")

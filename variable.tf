@@ -15,5 +15,5 @@ variable "machine" {                                     # List
     "db" = "e2-small"
   }
 }
-
+variable "project" {default = "stone-botany-329514"}
 variable "terraform-bucket" {default="stone-botany-329514-bucket"}

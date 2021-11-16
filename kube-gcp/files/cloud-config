@@ -1,3 +1,4 @@
 [Global]
 project-id = "stone-botany-329514"
+node-tags = "k8s"
 
