@@ -88,7 +88,7 @@ get/hosts:
 	@echo [set/hosts] OK
 _check_act:
 ifndef act
-	$(error "`atc` is undefined")
+	$(error "`act` is undefined")
 endif
 
 _check_VALUE:

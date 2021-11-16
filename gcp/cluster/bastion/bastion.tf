@@ -12,6 +12,7 @@ resource "google_compute_instance" "bastion" {
   metadata = {
     ssh-keys = "debian:${file("cred/id_rsa.pub")}"
   }
+  allow_stopping_for_update = true
   desired_status = var.status-bastion
   depends_on     = [local.public-1]
   network_interface {

@@ -29,9 +29,9 @@ variable "db-count" { default = 2 }
 variable "machine" { # List
   type = map(any)    # of
   default = {        # Virtual Machines
-    "slave"   = "n2d-highcpu-2"
-    "master"  = "n2-standard-2"
-    "bastion" = "e2-standard-2"
+    "slave"   = "e2-micro"
+    "master"  = "e2-small"
+    "bastion" = "e2-small"
     "db"      = "e2-small"
   }
 }
