@@ -23,7 +23,9 @@ $(TEMP_SINGLE): _check_act
 
 # Main targets: apply, destroy
 cluster/on: _set-up _apply-instances
+	@echo [cluster/on] OK
 cluster/off: _set-down _apply-instances
+	@echo [cluster/off] OK
 
 cluster/init:	
 	# Init cluster
@@ -163,7 +165,7 @@ get/kubeconfig:
 	rsync -Pav -e "ssh -i cred/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" debian@$(EXTERNAL_IP):/tmp/$(MASTER1_IP)/etc/kubernetes/admin.conf /tmp/
 	# Change ip on dns # You need to have "127.0.0.1 master-1" in your /etc/hosts !!!!
 	sed -i 's/$(MASTER1_IP)/master-1/' /tmp/admin.conf
-	cp /tmp/admin.config ~/.kube/config
+	cp /tmp/admin.conf ~/.kube/config
 
 get/ssh-tunnel:
 	# Get Variables

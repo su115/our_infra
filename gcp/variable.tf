@@ -29,14 +29,13 @@ variable "db-count" { default = 2 }
 variable "machine" { # List
   type = map(any)    # of
   default = {        # Virtual Machines
-    "slave"   = "e2-micro"
-    "master"  = "e2-small"
-    "bastion" = "e2-small"
-    "db"      = "e2-small"
+    "slave"   = "e2-micro"	# vCPUs:2, RAM:1GB
+    "master"  = "e2-small"	# vCPUs:2, RAM:2GB 
+    "bastion" = "g1-small"	# vCPUs:shared, RAM:1.7GB
   }
 }
 
 # State
-variable "status-bastion" { default = "RUNNING" }
-variable "status-master" { default = "RUNNING" }
-variable "status-slaves" { default = "RUNNING" }
+variable "status-bastion" { default = "TERMINATED" }
+variable "status-master" { default = "TERMINATED" }
+variable "status-slaves" { default = "TERMINATED" }
