@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+        name: simple-deploy
+        labels:
+                app: simple-deploy
+                aim: testing
+spec:
+        replicas: 1
+        selector:
+                matchLabels:
+                        app: simple-pod
+        template:
+                metadata:
+                        labels:
+                                app: simple-pod
+                                aim: tesing
+                spec:
+                        containers:
+                                - name: simple-pod
+                                  image: 125111317/testp1:simple-v2
+                                  ports:
+                                          - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+        name: simple-svc
+        labels:
+                aim: testing
+spec:
+        type: LoadBalancer
+        #      type: NodePort
+        selector:
+                app: simple-pod
+                
+        ports:
+                - protocol: TCP
+                  name: alt
+                  port: 8080
+                  targetPort: 8080       
+                  nodePort: 30202 
+
