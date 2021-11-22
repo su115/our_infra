@@ -31,11 +31,13 @@ variable "machine" { # List
   default = {        # Virtual Machines
     "slave"   = "e2-micro"	# vCPUs:2, RAM:1GB
     "master"  = "e2-small"	# vCPUs:2, RAM:2GB 
+    "gitlab"  = "n1-highcpu-4"	# vCPUs:4, RAM:3.6GB 
     "bastion" = "g1-small"	# vCPUs:shared, RAM:1.7GB
   }
 }
 
 # State
-variable "status-bastion" { default = "TERMINATED" }
-variable "status-master" { default = "TERMINATED" }
-variable "status-slaves" { default = "TERMINATED" }
+variable "status-bastion" { default = "RUNNING" }
+variable "status-master" { default = "RUNNING" }
+variable "status-slaves" { default = "RUNNING" }
+variable "status-gitlab" { default = "RUNNING" }

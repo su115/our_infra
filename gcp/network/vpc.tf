@@ -19,7 +19,7 @@ resource "google_compute_subnetwork" "public-1" {
 
 resource "google_compute_subnetwork" "private-2" {
   name          = "private-2"
-  ip_cidr_range = "10.10.3.0/29"
+  ip_cidr_range = "10.10.3.0/24"
   region        = var.region
   network       = google_compute_network.main_vpc.id
 }

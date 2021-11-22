@@ -75,3 +75,25 @@ resource "google_compute_firewall" "allow_bastion_6443" {
   source_ranges = ["10.10.2.2/32"]
 }
 
+resource "google_compute_firewall" "allow_bastion_http" {
+  name    = "allow-bastion-http"
+  network = google_compute_network.main_vpc.name
+  allow {
+    protocol = "tcp"
+    ports    = ["80", ] # K8S API server
+  }
+  target_tags   = ["allow-bastion-http"]
+  source_ranges = ["10.10.2.2/32"]
+}
+
+resource "google_compute_firewall" "allow_private2_all" {
+  name    = "allow-private2-all"
+  network = google_compute_network.main_vpc.name
+  allow {
+    protocol = "all"
+  }
+  target_tags   = ["allow-private2-all"]
+  source_ranges = ["10.10.3.0/24"]
+}
+
+

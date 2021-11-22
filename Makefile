@@ -3,7 +3,8 @@ help:
 	cat doc/make.help
 
 # Variables
-SINGLE := network cluster/master cluster/slaves cluster/bastion  	 # order apply
+
+SINGLE:= network cluster/master cluster/slaves cluster/bastion  	 # order apply
 TEMP_SINGLE := single/network single/cluster/master single/cluster/slaves single/cluster/bastion  	 # single bug solution
 REV_SINGLE := cluster/slaves cluster/master cluster/bastion network 	 # order destroy
 
@@ -29,25 +30,28 @@ cluster/off: _set-down _apply-instances
 
 cluster/init:	
 	# Init cluster
-	for i in  $(SINGLE); do \
-		terraform -chdir=gcp/$$i init ; \
-	done
-	@echo "[init cluster] OK"
+	 ./make_scripts/cluster/init.sh "$(shell echo "$(SINGLE)")"
+#	for i in  $(SINGLE); do \
+#		terraform -chdir=gcp/$$i init ; \
+#	done
+#	@echo "[init cluster] OK"
 
 
 cluster/apply:
-	# Apply cluster
-	for i in  $(SINGLE); do \
-		terraform -chdir=gcp/$$i apply -auto-approve ; \
-	done
-	@echo "[Apply cluster] OK"
+	# Apply 
+	 ./make_scripts/cluster/apply.sh "$(shell echo "$(SINGLE)")"
+	#for i in  $(SINGLE); do \
+	#	terraform -chdir=gcp/$$i apply -auto-approve ; \
+	#done
+	#@echo "[Apply cluster] OK"
 
 cluster/destroy:
 	# Destroy cluster
-	for i in  $(REV_SINGLE); do \
-		terraform -chdir=gcp/$$i destroy -auto-approve ; \
-	done
-	@echo "[Destroy cluster] OK"
+	 ./make_scripts/cluster/apply.sh "$(shell echo "$(REV_SINGLE)")"
+	#for i in  $(REV_SINGLE); do \
+	#	terraform -chdir=gcp/$$i destroy -auto-approve ; \
+	#done
+	#@echo "[Destroy cluster] OK"
 
 # Internal targets: for (on/off)
 _apply-instances:
