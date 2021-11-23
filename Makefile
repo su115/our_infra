@@ -4,10 +4,10 @@ help:
 
 # Variables
 
-SINGLE:= network cluster/master cluster/slaves cluster/bastion  	 # order apply
-TEMP_SINGLE := single/network single/cluster/master single/cluster/slaves single/cluster/bastion  	 # single bug solution
-REV_SINGLE := cluster/slaves cluster/master cluster/bastion network 	 # order destroy
-
+SINGLE:= network cluster/master cluster/slaves cluster/bastion # order apply
+TEMP_SINGLE := single/network single/cluster/master single/cluster/slaves single/cluster/bastion  # single bug solution
+REV_SINGLE := cluster/slaves cluster/master cluster/bastion network # order destroy
+order="$(shell echo "$(SINGLE)")"
 
 # Internal variables
 #act=plan	# Action to do with component
@@ -23,8 +23,10 @@ $(TEMP_SINGLE): _check_act
 
 
 # Main targets: apply, destroy
-cluster/on: _set-up _apply-instances
+cluster/on:  _set-up _apply-instances
+#	./make_scripts/cluster/on.sh $(order)
 	@echo [cluster/on] OK
+	
 cluster/off: _set-down _apply-instances
 	@echo [cluster/off] OK
 

@@ -1,7 +1,7 @@
 #! /bin/bash
 
 path=$1
-prepath=/gcp/
+prepath=gcp/
 # check path is empty
 echo "$path"
 if [ -z "$path" ]; then
@@ -12,8 +12,8 @@ fi
 # check if path exists
 for i in $path; do
         echo "$i"
-        if [ ! -d "$PWD$prepath$i" ]; then
-                echo "$PWD$prepath$i not exists"
+        if [ ! -d "$PWD/$prepath$i" ]; then
+                echo "$PWD/$prepath$i not exists"
                 exit 1
         fi
 done
